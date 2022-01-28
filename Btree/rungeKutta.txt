@@ -1,0 +1,82 @@
+double *RungeKuttaMethodE(double a, double b, double x0, double y0, int *n, double(*fun) (double, double), double **grid, double E, double r, double *delta, bool isFirst) {
+	double *prevGrid = NULL;
+	int prevN;
+
+	*n *= 2;
+	prevGrid = new double[*n  + 1];
+	if (!isFirst) {
+
+		
+		for (int i = 0; i < *n + 1; i++) {
+			prevGrid[i] = (*grid)[i];
+		}
+
+		prevN = *n;
+	}
+
+	int numOfMult = 0;
+	int hn = *n * 2;
+	double *yh = NULL;
+	double *xh = NULL; 
+	double R;
+	bool isMudified = false;
+
+	for (int i = 1; i < *n + 1; i++) {
+		
+		yh = RungeKuttaMethod(a, b, x0, y0, hn, fun, &xh);
+		
+		if (isFirst) {
+			
+
+			for (int i = 0; i < *n + 1; i++) {
+				prevGrid[i] = (xh)[i];
+			}
+
+			prevN = *n;
+			isFirst = false;
+		}
+
+		R = GetR(yh[i * 2], yh[i], r);
+
+		if (R > E){
+			isMudified = true;
+			printf("NumOfIter = %i\n", i);
+			printf("OldN = %i\n", hn);
+			printf("r(xi) = %lf\n", R);
+			printf("E = %lf\n", E);
+			printf("       \n");
+			hn *= 2;
+			numOfMult++;
+		}
+
+		if (i == *n) {
+			if (isMudified) {
+				i = 1;
+				isMudified = false;
+			}
+			else {
+				break;
+			}
+		}
+		delete[] xh;
+		delete[] yh;
+	}
+	*grid = xh;
+	*n = hn;
+	*delta = (b - a) / hn;
+
+	double *newY = NULL;
+	
+	newY = new double[prevN + 1];
+	for (int i = 0; i < 4; i += (numOfMult * 2 + 1)) {
+		newY[i] = yh[i];
+	}
+	free(yh);
+	free(*grid);
+
+	*grid = prevGrid;
+	*n = prevN;
+	
+	
+	return newY;
+}

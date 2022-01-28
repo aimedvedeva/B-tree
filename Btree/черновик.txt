@@ -1,0 +1,51 @@
+/*
+	double a = 1;
+	double b = 2;
+	double x0 = 1;
+	double y0 = 2;
+	file.open("output.txt");
+	int n = 1;//количество промежутков разбиения --> H = 2 && h = 4
+	double *grid;
+	double E = 1;
+	double r = 4;
+	double delta;
+
+	double *funGrid = RungeKuttaMethodE(a, b, x0, y0, &n, testFun, &grid, E, r, &delta);
+	PrintResult(funGrid, grid, 2);
+	*/
+	double a = 1;
+	double b = 2;
+	double x0 = 1;                 
+	double y0 = 1 / sqrt(2 * e);      
+	
+	
+	//сначала поучаем исходные данные
+
+	file.open("output.txt");
+	int n = 2;//количество промежутков разбиения --> H = 2 && h = 4
+	double *grid;
+    double E = 0.01;
+	double r = 4;
+	double delta;
+
+	a = -1;
+	b = 1;
+	E = 0.01;
+	x0 = -1;
+	y0 = e;
+	double *funGrid = RungeKuttaMethodE(a, b, x0, y0, &n, fun2, &grid, E, r, &delta);
+	
+	
+/*	y0 = 1 / sqrt(2 * e) + 0.001;
+	int n1 = 2;
+	double *funGrid1 = RungeKuttaMethodE(a, b, x0, y0, &n1, fun, &grid, E, r, &delta);
+
+	double norm1 = EuclideanNorm(funGrid1, n1);
+	double norma = EuclideanNorm(funGrid, n);
+	double res = abs(norma - norm1) / norma;
+	*/
+    PrintResult(funGrid, grid, n);
+	
+	delete[] grid;
+	delete[] funGrid;
+	file.close();
